@@ -1,1 +1,106 @@
+#include <Wire.h>
+#include <BH1750.h>
+#include <LiquidCrystal.h>
+#include <LiquidCrystal_I2C.h>
 
+//setup 16x2 LCD - create 2 icons to use on the LCD
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+byte smiley[8] = {
+  0b00000,
+  0b00000,
+  0b01010,
+  0b00000,
+  0b00000,
+  0b10001,
+  0b01110,
+  0b00000
+};
+
+byte frownie[8] = {
+  0b00000,
+  0b00000,
+  0b01010,
+  0b00000,
+  0b00000,
+  0b00000,
+  0b01110,
+  0b10001
+};
+
+//setup lightmeters
+BH1750 lightmeter_a;
+BH1750 lightmeter_b;
+
+const int numReadings = 10;
+const int buttonPin = 6;
+
+int readings[numReadings];
+int readings2[numReadings];
+int readIndex = 0;
+int readIndex2 = 0;
+int total = 0;
+int total2 = 0;
+float average = 0;
+float average2 = 0;
+float diff = 0;
+float diff1 = 0;
+float diff2 = 0;
+float lux_a = 0; 
+float lux_b = 0; 
+int Round;
+long start;
+long end;
+
+//setup system
+void setup() {
+  Serial.begin(9600);
+  Wire.begin();
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  lightmeter_a.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23); //address should 0x23
+  lightmeter_b.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x5C); //hardware note - connect vcc to add
+  lcd.begin(16, 2);
+  lcd.clear();
+  lcd.backlight();
+  lcd.setCursor(0, 0);
+  lcd.print("Trans tester...");
+  Serial.println("transmission tester setting up...");
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print("Ready!");
+  Serial.println("Ready!");
+  //this section sets up 2 arrays and makes sure they are 'empty'
+  for (int thisReading = 0; thisReading < numReadings; thisReading++) {
+    readings[thisReading] = 0;
+  }
+  for (int thisReading2 = 0; thisReading2 < numReadings; thisReading2++) {
+    readings[thisReading2] = 0;
+  }
+}
+
+//setup a reset function to be called anytime
+void(* resetFunc)(void) = 0;
+
+//setup trans_measure function
+void trans_meaure()
+
+//setup dual measure function
+void dual_measure() {
+  
+  
+
+//setup standard loop - clear LCD and prepare to measure
+void loop(){
+  start = millis();
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("press button");
+  lcd.setCursor(0, 1);
+  lcd.print("to measure");
+  
+  if (digitalRead(buttonPin) != HIGH); {
+      trans_measure();
+    }
+    else {
+      dual_measure();
+    }

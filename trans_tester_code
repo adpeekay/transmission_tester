@@ -84,7 +84,7 @@ void setup() {
 void(* resetFunc)(void) = 0;
 
 //setup trans_measure function
-void trans_meaure() {
+void trans_measure() {
   for (int thisReading = 0; thisReading < numReadings; thisReading++)
   {
     lcd.clear();
@@ -97,9 +97,9 @@ void trans_meaure() {
     total2 = total2 - readings2[readIndex2];
     // read from the sensor:
     readings[readIndex] = lightmeter_a.readLightLevel();
-    readings2[readIndex2] = lightmeter_b.readLightlevel();
+    readings2[readIndex2] = lightmeter_b.readLightLevel();
     Serial.println(readings[readIndex]);
-    Serial.println(reading2[readIndex2]);
+    Serial.println(readings2[readIndex2]);
     // add the reading to the total:
     total = total + readings[readIndex];
     total2 = total2 + readings2[readIndex2];
@@ -134,6 +134,7 @@ void trans_meaure() {
   lcd.print("press to reset");
   if (digitalRead(buttonPin) != HIGH); {
     resetFunc();
+  }
   //not sure what next
   
 
@@ -141,9 +142,9 @@ void trans_meaure() {
 
 //setup dual measure function
 void dual_measure() {
-  For (i <= 10; i++);{
-    lux_a = lightmeter_a.readLightlevel();
-    lux_b = lightmeter_b.readLightlevel();
+  for (i = 0; i <= 10; i++) {
+    lux_a = lightmeter_a.readLightLevel();
+    lux_b = lightmeter_b.readLightLevel();
     Serial.print("a: ");
     Serial.print(lux_a);
     Serial.println(" lux");
@@ -152,11 +153,11 @@ void dual_measure() {
     Serial.println(" lux");
     Serial.println(i);
     delay(1000);
-      } //end of for loop
-  } //end of void
+  } //end of for loop
+} //end of void
 
 //setup standard loop - clear LCD and prepare to measure
-void loop(){
+void loop() {
   start = millis();
   lcd.clear();
   lcd.setCursor(0, 0);
@@ -164,9 +165,10 @@ void loop(){
   lcd.setCursor(0, 1);
   lcd.print("to measure");
   
-  if (digitalRead(buttonPin) != HIGH); {
-      trans_measure();
+  if (digitalRead(buttonPin) != HIGH) {
+   trans_measure();
     }
-    else {
-      dual_measure();
-    }
+  else {
+    dual_measure();
+  }
+}    

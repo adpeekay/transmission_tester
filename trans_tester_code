@@ -85,7 +85,55 @@ void(* resetFunc)(void) = 0;
 
 //setup trans_measure function
 void trans_meaure() {
+  for (int thisReading = 0; thisReading < numReadings; thisReading++)
+  {
+    lcd.clear();
+    lcd.setCursor(0, 0);
+    lcd.print("sampling");
+    lcd.setCursor(0, 1);
+    lcd.print("hold still");
+    // subtract the last reading:
+    total = total - readings[readIndex];
+    total2 = total2 - readings2[readIndex2];
+    // read from the sensor:
+    readings[readIndex] = lightmeter_a.readLightLevel();
+    readings2[readIndex2] = lightmeter_b.readLightlevel();
+    Serial.println(readings[readIndex]);
+    Serial.println(reading2[readIndex2]);
+    // add the reading to the total:
+    total = total + readings[readIndex];
+    total2 = total2 + readings2[readIndex2];
+    // advance to the next position in the array:
+    readIndex = readIndex + 1;
+    readIndex2 = readIndex2 + 1;
+
+    // calculate the average:
+    average = total / numReadings;
+    average2 = total2 / numReadings;
+    delay(500);
+  }//end of for loop
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("Calculating . . .");
+  delay(1000);
+  diff = average2 / average;
+  diff1 = diff * 100;
+  Serial.print(diff1);
+  Serial.println(" % transmission");
+  diff1 = diff1 / 10;
+  Round = int(round(diff1));
+  Round = Round * 10;
+  Serial.print(Round);
+  Serial.println(" % transmission to nearest 10");
+  delay(1000);
+  lcd.setCursor(0, 1);
+  lcd.print(Round);
+  lcd.setCursor(3, 0);
+  lcd.print("% transmission");
+  lcd.setCursor(0, 0);
+  lcd.print("press to reset");
   
+
 } // end of void
 
 //setup dual measure function
@@ -101,7 +149,7 @@ void dual_measure() {
     Serial.println(" lux");
     Serial.println(i);
     delay(1000);
-      }//end of for loop
+      } //end of for loop
   } //end of void
 
 //setup standard loop - clear LCD and prepare to measure

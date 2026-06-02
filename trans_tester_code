@@ -59,6 +59,8 @@ void setup() {
   pinMode(buttonPin, INPUT);
   lightmeter_a.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23); //address should 0x23
   lightmeter_b.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x5C); //hardware note - connect vcc to add
+  lcd.createChar(0, smiley);
+  lcd.createChar(1, frownie);
   lcd.begin(16, 2);
   lcd.clear();
   lcd.backlight();

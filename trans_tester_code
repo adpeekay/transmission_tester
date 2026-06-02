@@ -132,6 +132,9 @@ void trans_meaure() {
   lcd.print("% transmission");
   lcd.setCursor(0, 0);
   lcd.print("press to reset");
+  if (digitalRead(buttonPin) != HIGH); {
+    resetFunc();
+  //not sure what next
   
 
 } // end of void

@@ -48,6 +48,7 @@ float diff2 = 0;
 float lux_a = 0; 
 float lux_b = 0; 
 int Round;
+int i = 0;
 long start;
 long end;
 
@@ -55,7 +56,6 @@ long end;
 void setup() {
   Serial.begin(9600);
   Wire.begin();
-  pinMode(ledPin, OUTPUT);
   pinMode(buttonPin, INPUT);
   lightmeter_a.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23); //address should 0x23
   lightmeter_b.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x5C); //hardware note - connect vcc to add
@@ -84,12 +84,25 @@ void setup() {
 void(* resetFunc)(void) = 0;
 
 //setup trans_measure function
-void trans_meaure()
+void trans_meaure() {
+  
+} // end of void
 
 //setup dual measure function
 void dual_measure() {
-  
-  
+  For (i <= 10; i++);{
+    lux_a = lightmeter_a.readLightlevel();
+    lux_b = lightmeter_b.readLightlevel();
+    Serial.print("a: ");
+    Serial.print(lux_a);
+    Serial.println(" lux");
+    Serial.print("b: ");
+    Serial.print(lux_b);
+    Serial.println(" lux");
+    Serial.println(i);
+    delay(1000);
+      }//end of for loop
+  } //end of void
 
 //setup standard loop - clear LCD and prepare to measure
 void loop(){

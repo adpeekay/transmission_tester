@@ -56,7 +56,7 @@ long end;
 void setup() {
   Serial.begin(9600);
   Wire.begin();
-  pinMode(buttonPin, INPUT);
+  pinMode(buttonPin, INPUT_PULLUP);
   lightmeter_a.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x23); //address should 0x23
   lightmeter_b.begin(BH1750::CONTINUOUS_HIGH_RES_MODE, 0x5C); //hardware note - connect vcc to add
   lcd.createChar(0, smiley);
@@ -78,6 +78,12 @@ void setup() {
   for (int thisReading2 = 0; thisReading2 < numReadings; thisReading2++) {
     readings[thisReading2] = 0;
   }
+  delay(1000);
+  lcd.clear();
+  lcd.setCursor(0, 0);
+  lcd.print("press button");
+  lcd.setCursor(0, 1);
+  lcd.print("to measure");
 }
 
 //setup a reset function to be called anytime
@@ -98,8 +104,9 @@ void trans_measure() {
     // read from the sensor:
     readings[readIndex] = lightmeter_a.readLightLevel();
     readings2[readIndex2] = lightmeter_b.readLightLevel();
-    Serial.println(readings[readIndex]);
-    Serial.println(readings2[readIndex2]);
+    //Serial.print(readings[readIndex]);
+    //Serial.print(", ");
+    //Serial.println(readings2[readIndex2]);
     // add the reading to the total:
     total = total + readings[readIndex];
     total2 = total2 + readings2[readIndex2];
@@ -114,7 +121,7 @@ void trans_measure() {
   }//end of for loop
   lcd.clear();
   lcd.setCursor(0, 0);
-  lcd.print("Calculating . . .");
+  lcd.print("Calculating.......");
   delay(1000);
   diff = average2 / average;
   diff1 = diff * 100;
@@ -126,49 +133,52 @@ void trans_measure() {
   Serial.print(Round);
   Serial.println(" % transmission to nearest 10");
   delay(1000);
-  lcd.setCursor(0, 1);
+  lcd.clear();
+  lcd.setCursor(0, 0);
   lcd.print(Round);
   lcd.setCursor(3, 0);
   lcd.print("% transmission");
-  lcd.setCursor(0, 0);
+  lcd.setCursor(0, 1);
   lcd.print("press to reset");
-  if (digitalRead(buttonPin) != HIGH); {
-    resetFunc();
-  }
-  //not sure what next
-  
-
+  start = millis();
+  lcd.setCursor(15,1);
+  lcd.write(smiley);
+    
+  do {
+    end = millis() - start;
+      if (digitalRead(buttonPin) == LOW) {
+      resetFunc();
+      }
+  } while (end < 20000);
+     
+  resetFunc();
 } // end of void
 
 //setup dual measure function
 void dual_measure() {
-  for (i = 0; i <= 10; i++) {
-    lux_a = lightmeter_a.readLightLevel();
-    lux_b = lightmeter_b.readLightLevel();
-    Serial.print("a: ");
-    Serial.print(lux_a);
-    Serial.println(" lux");
-    Serial.print("b: ");
-    Serial.print(lux_b);
-    Serial.println(" lux");
-    Serial.println(i);
-    delay(1000);
-  } //end of for loop
+  i=0;
+  lux_a = lightmeter_a.readLightLevel();
+  lux_b = lightmeter_b.readLightLevel();
+  Serial.print("a: ");
+  Serial.print(lux_a);
+  Serial.println(" lux");
+  Serial.print("b: ");
+  Serial.print(lux_b);
+  Serial.println(" lux");
+  Serial.println(i);
+  delay(1000);
+  i++;
+  //loop();
 } //end of void
 
 //setup standard loop - clear LCD and prepare to measure
 void loop() {
-  start = millis();
-  lcd.clear();
-  lcd.setCursor(0, 0);
-  lcd.print("press button");
-  lcd.setCursor(0, 1);
-  lcd.print("to measure");
   
-  if (digitalRead(buttonPin) != HIGH) {
-   trans_measure();
-    }
-  else {
+  if (digitalRead(buttonPin) == HIGH) {
     dual_measure();
   }
+  else {
+    trans_measure();
+  }
+
 }    
